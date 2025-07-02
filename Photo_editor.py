@@ -146,6 +146,15 @@ def reset_changes():
     showinfo(title='Успех', message='Изменения фотографии были сброшены')
 
 
+@img_check
+def convert_to_grayscale():
+    """Преобразует изображение в оттенки серого."""
+    global img
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)  # Для сохранения 3 каналов
+    showinfo(title='Успех', message='Изображение преобразовано в оттенки серого')
+
+
 def main():
     """Инициализирует главное окно приложения."""
     main_window = Tk()
