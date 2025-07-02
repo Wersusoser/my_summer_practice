@@ -42,8 +42,8 @@ python -m build
 
 ---
 После успешной сборки в папке `dist/` появятся два файла:
-- `image_redactor-1.0.0.tar.gz` - архив с исходным кодом
-- `image_redactor-1.0.0-py3-none-any.whl` - бинарный wheel-пакет
+- `photo_editor-1.0.0.tar.gz` - архив с исходным кодом
+- `photo_editor-1.0.0-py3-none-any.whl` - бинарный wheel-пакет
 
 ### 3. Проверка содержимого пакета
 Убедитесь, что все необходимые файлы включены:
@@ -67,12 +67,12 @@ unzip -l dist/image_redactor-1.0.0-py3-none-any.whl
 Для тестирования установки:
 
 ```bash
-pip install dist/image_redactor-1.0.0-py3-none-any.whl
+pip install dist/photo_editor-1.0.0-py3-none-any.whl
 ```
 
 Или альтернативный вариант:
 ```bash
-pip install dist/image_redactor-1.0.0.tar.gz
+pip install dist/photo_editor-1.0.0.tar.gz
 ```
 
 
@@ -81,7 +81,7 @@ pip install dist/image_redactor-1.0.0.tar.gz
 1. **Клонирование репозитория**:
    ```bash
    git clone https://github.com/ваш-репозиторий.git
-   cd image-redactor
+   cd photo_editor
    ```
 
 2. **Создание виртуального окружения**:
