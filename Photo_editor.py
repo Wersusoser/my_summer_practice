@@ -275,6 +275,34 @@ def resize_image():
     resize_window.grab_set()
 
 
+@img_check
+def choice_channel():
+    """Показывает отдельные цветовые каналы изображения.
+
+    Создает окно с кнопками для отображения красного, зеленого и синего
+    каналов в отдельных окнах.
+    """
+    global img
+    channel_window = Toplevel()
+    channel_window.title('Выбор канала отображения')
+    channel_window.geometry("300x300")
+    b, g, r = cv2.split(img)
+    red_channel = cv2.merge([np.zeros_like(r), np.zeros_like(r), r])
+    green_channel = cv2.merge([np.zeros_like(g), g, np.zeros_like(g)])
+    blue_channel = cv2.merge([b, np.zeros_like(b), np.zeros_like(b)])
+    buttons = [
+        ("Показать красный канал",
+         lambda: photo_opening('RED', red_channel)),
+        ("Показать зеленый канал",
+         lambda: photo_opening('GREEN', green_channel)),
+        ("Показать синий канал",
+         lambda: photo_opening('BLUE', blue_channel))
+    ]
+
+    for text, cmd in buttons:
+        ttk.Button(channel_window, text=text, command=cmd).pack(pady=5)
+
+
 def main():
     """Инициализирует главное окно приложения."""
     main_window = Tk()
@@ -306,7 +334,8 @@ def main():
         ("Сбросить изменения", reset_changes),
         ("В оттенки серого", convert_to_grayscale),
         ("Нарисовать прямоугольник", draw_rectangle),
-        ("Изменить размер", resize_image)
+        ("Изменить размер", resize_image),
+        ("Выбрать цветовой канал (RGB)", choice_channel)
     ]
 
     for text, command in buttons:
