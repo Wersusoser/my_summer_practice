@@ -1,18 +1,31 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
-# Чтение описания из README.md
-this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
+def parse_requirements():
+    """Универсальное чтение requirements.txt с обработкой кодировок"""
+    req_path = Path(__file__).parent / "requirements.txt"
 
-# Чтение зависимостей
-def get_requirements():
-    requirements_path = this_directory / "requirements.txt"
-    with open(requirements_path, encoding="utf-8") as f:
+    # Попробуем основные кодировки
+    encodings = ['utf-8-sig', 'utf-16', 'cp1251']
+
+    for enc in encodings:
+        try:
+            with open(req_path, encoding=enc) as f:
+                return [
+                    line.strip()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                ]
+        except UnicodeError:
+            continue
+
+    # Если ни одна кодировка не подошла - читаем как бинарный файл
+    with open(req_path, 'rb') as f:
+        content = f.read().decode('utf-8', errors='ignore')
         return [
             line.strip()
-            for line in f
+            for line in content.splitlines()
             if line.strip() and not line.startswith("#")
         ]
 
@@ -20,41 +33,16 @@ def get_requirements():
 setup(
     name="photo_editor",
     version="1.0.0",
-    author="Гумбатов Кирилл",
+    packages=find_packages(),
+    install_requires=parse_requirements(),
+
+    # Базовые параметры (без long_description_content_type для Python 3.6)
+    author="Кирилл Гумбатов",
     author_email="gum20006@yandex.ru",
-    description="Фоторедатор изображений",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
 
-    # Указание пакетов
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-
-    # Указание скриптов
-    py_modules=["photo_editor"],
-
-    # Зависимости
-    install_requires=get_requirements(),
-
-    # Точки входа
     entry_points={
-        "console_scripts": [
-            "photo-editor=photo_editor:main",
+        'console_scripts': [
+            'photo-editor=photo_editor:main',
         ],
-    },
-
-    # Метаданные
-    python_requires=">=3.8",
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Intended Audience :: End Users/Desktop",
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-        "Topic :: Multimedia :: Graphics :: Editors",
-    ],
-
-    # Включение дополнительных файлов
-    include_package_data=True,
-    package_data={
-        "": ["*.txt", "*.md"],
-    },
+    }
 )
