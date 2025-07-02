@@ -155,6 +155,88 @@ def convert_to_grayscale():
     showinfo(title='Успех', message='Изображение преобразовано в оттенки серого')
 
 
+@img_check
+def draw_rectangle():
+    """Рисует прямоугольник на изображении по заданным координатам."""
+    global img
+    rect_window = Toplevel()
+    rect_window.title('Рисование прямоугольника')
+    rect_window.geometry("300x400")
+
+    # Координаты
+    ttk.Label(rect_window, text="Координата x1:").pack()
+    x1_entry = ttk.Entry(rect_window)
+    x1_entry.pack()
+
+    ttk.Label(rect_window, text="Координата y1:").pack()
+    y1_entry = ttk.Entry(rect_window)
+    y1_entry.pack()
+
+    ttk.Label(rect_window, text="Координата x2:").pack()
+    x2_entry = ttk.Entry(rect_window)
+    x2_entry.pack()
+
+    ttk.Label(rect_window, text="Координата y2:").pack()
+    y2_entry = ttk.Entry(rect_window)
+    y2_entry.pack()
+
+    # Цвет
+    ttk.Label(rect_window, text="Цвет (B G R, 0-255):").pack()
+    color_entries = []
+    for i, color in enumerate(["Синий (B):", "Зеленый (G):", "Красный (R):"]):
+        ttk.Label(rect_window, text=color).pack()
+        entry = ttk.Entry(rect_window)
+        entry.pack()
+        color_entries.append(entry)
+
+    # Толщина
+    ttk.Label(rect_window, text="Толщина линии:").pack()
+    thickness_entry = ttk.Entry(rect_window)
+    thickness_entry.pack()
+
+    def apply_rectangle():
+        """Рисует прямоугольник с проверкой введенных параметров."""
+        try:
+            height, width = img.shape[:2]
+            x1 = int(x1_entry.get())
+            y1 = int(y1_entry.get())
+            x2 = int(x2_entry.get())
+            y2 = int(y2_entry.get())
+
+            # Проверка координат
+            if (x1 < 0 or y1 < 0 or x2 > width or y2 > height or
+                    x1 >= x2 or y1 >= y2):
+                showwarning('Ошибка', 'Некорректные координаты прямоугольника')
+                return
+
+            # Получение цвета
+            color = []
+            for entry in color_entries:
+                val = int(entry.get())
+                if val < 0 or val > 255:
+                    showwarning('Ошибка', 'Значения цвета должны быть от 0 до 255')
+                    return
+                color.append(val)
+            color = tuple(color)
+
+            # Толщина
+            thickness = int(thickness_entry.get())
+            if thickness < -1:
+                showwarning('Ошибка', 'Толщина должна быть >= -1')
+                return
+
+            # Рисование прямоугольника
+            cv2.rectangle(img, (x1, y1), (x2, y2), color, thickness)
+            rect_window.destroy()
+            showinfo('Успех', 'Прямоугольник успешно нарисован')
+
+        except ValueError:
+            showwarning('Ошибка', 'Пожалуйста, введите целые числа')
+
+    ttk.Button(rect_window, text="Применить", command=apply_rectangle).pack(pady=10)
+    rect_window.grab_set()
+
+
 def main():
     """Инициализирует главное окно приложения."""
     main_window = Tk()
@@ -184,6 +266,8 @@ def main():
         ("Сделать фото с камеры", webcam_photo),
         ("Показать изображение", open_main_photo),
         ("Сбросить изменения", reset_changes),
+        ("В оттенки серого", convert_to_grayscale),
+        ("Нарисовать прямоугольник", draw_rectangle),
     ]
 
     for text, command in buttons:
