@@ -237,6 +237,44 @@ def draw_rectangle():
     rect_window.grab_set()
 
 
+@img_check
+def resize_image():
+    """Изменяет размер изображения по введенным параметрам."""
+    global img
+    resize_window = Toplevel()
+    resize_window.title('Изменение размера изображения')
+    resize_window.geometry("300x200")
+
+    ttk.Label(resize_window, text="Ширина").pack()
+    width_entry = ttk.Entry(resize_window)
+    width_entry.pack()
+
+    ttk.Label(resize_window, text="Высота").pack()
+    height_entry = ttk.Entry(resize_window)
+    height_entry.pack()
+
+    def apply_resize():
+        """Применяет изменение размера с проверкой введенных значений."""
+        global img
+        try:
+            width = int(width_entry.get())
+            height = int(height_entry.get())
+
+            if width <= 0 or height <= 0:
+                showwarning('Ошибка', 'Размеры должны быть положительными числами')
+                return
+
+            img = cv2.resize(img, (width, height))
+            resize_window.destroy()
+            showinfo('Успех', 'Размер изображения изменен')
+
+        except ValueError:
+            showwarning('Ошибка', 'Пожалуйста, введите целые числа')
+
+    ttk.Button(resize_window, text="Применить", command=apply_resize).pack(pady=10)
+    resize_window.grab_set()
+
+
 def main():
     """Инициализирует главное окно приложения."""
     main_window = Tk()
@@ -268,6 +306,7 @@ def main():
         ("Сбросить изменения", reset_changes),
         ("В оттенки серого", convert_to_grayscale),
         ("Нарисовать прямоугольник", draw_rectangle),
+        ("Изменить размер", resize_image)
     ]
 
     for text, command in buttons:
