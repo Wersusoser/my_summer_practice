@@ -245,11 +245,11 @@ def resize_image():
     resize_window.title('Изменение размера изображения')
     resize_window.geometry("300x200")
 
-    ttk.Label(resize_window, text="Ширина").pack()
+    ttk.Label(resize_window, text="Ширина:").pack()
     width_entry = ttk.Entry(resize_window)
     width_entry.pack()
 
-    ttk.Label(resize_window, text="Высота").pack()
+    ttk.Label(resize_window, text="Высота:").pack()
     height_entry = ttk.Entry(resize_window)
     height_entry.pack()
 
